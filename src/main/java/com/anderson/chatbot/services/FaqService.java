@@ -15,7 +15,7 @@ public class FaqService {
 
     public String getAnswer(String question){
         String[] words = question.toLowerCase().split("\\s+");
-        List wordsList = Arrays.asList(words).stream().map(String::toLowerCase).toList();
+        List wordsList = Arrays.asList(words).stream().map(String::toLowerCase).map(this::replaceForbiddenChar).toList();
 
         for (FaqAnswer entry : faqAnswers.getAnswers()) {
             for (String keyword : entry.getKeywords()) {
@@ -27,6 +27,10 @@ public class FaqService {
 
         return faqAnswers.getDefaultAnswer();
 
+    }
+
+    public String replaceForbiddenChar(String question){
+        return question.replace("?","");
     }
 
 }
