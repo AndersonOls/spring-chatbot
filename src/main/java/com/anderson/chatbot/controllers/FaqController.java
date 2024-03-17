@@ -1,8 +1,9 @@
 package com.anderson.chatbot.controllers;
 
 
+import com.anderson.chatbot.dto.MessageResponse;
 import com.anderson.chatbot.dto.MessageRequest;
-import com.anderson.chatbot.utils.FaqAnswers;
+import com.anderson.chatbot.services.FaqService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -12,10 +13,16 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/chat")
 public class FaqController {
+    private FaqService faqService;
+
+    public FaqController(FaqService faqService){
+        this.faqService = faqService;
+    }
+
     @PostMapping
-    public ResponseEntity<String> answerQuestion(@RequestBody MessageRequest request){
-        FaqAnswers faqAnswers = new FaqAnswers();
-        System.out.println(faqAnswers.getAnswers().get(1).getAnswer());
-        return ResponseEntity.ok("Ok");
+    public ResponseEntity<MessageResponse> answerQuestion(@RequestBody MessageRequest request){
+        String answer = this.faqService.getAnswer(request.message());
+        MessageResponse response = new MessageResponse(answer);
+        return ResponseEntity.ok(response);
     }
 }
